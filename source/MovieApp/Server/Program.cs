@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using MovieApp.Server.DataAccess;
 using MovieApp.Server.GraphQL;
 using MovieApp.Server.Interfaces;
@@ -16,7 +17,7 @@ builder.Services.AddPooledDbContextFactory<MovieDBContext>
     (opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IMovie, MovieDataAccessLayer>();
 builder.Services.AddGraphQLServer()
-    .AddQueryType<MovieQueryResolver>();
+    .AddQueryType<MovieQueryResolver>().AddMutationType<MovieMutationResolver>();
 
 var app = builder.Build();
 
@@ -45,5 +46,19 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.UseEndpoints(endpts => endpts.MapGraphQL());
+
+string FileProviderPath = app.Environment.ContentRootPath + "/Poster";
+
+if (!Directory.Exists(FileProviderPath))
+{
+	Directory.CreateDirectory(FileProviderPath);
+}
+
+app.UseFileServer(new FileServerOptions
+{
+	FileProvider = new PhysicalFileProvider(FileProviderPath),
+	RequestPath = "/Poster",
+	EnableDirectoryBrowsing = true
+});
 
 app.Run();
