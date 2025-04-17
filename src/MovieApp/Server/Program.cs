@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using MovieApp.Server.DataAccess;
 using MovieApp.Server.GraphQL;
 using MovieApp.Server.Interfaces;
@@ -43,6 +44,19 @@ app.MapFallbackToFile("index.html");
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGraphQL();
+});
+
+string FileProviderPath = app.Environment.ContentRootPath + "/poster";
+if (!Directory.Exists(FileProviderPath))
+{
+    Directory.CreateDirectory(FileProviderPath);
+}
+
+app.UseFileServer(new FileServerOptions
+{
+    FileProvider = new PhysicalFileProvider(FileProviderPath),
+    RequestPath = "/Poster",
+    EnableDirectoryBrowsing = true
 });
 
 app.Run();
