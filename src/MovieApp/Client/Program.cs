@@ -11,4 +11,11 @@ builder.Services.AddHttpClient("MovieApp.ServerAPI", client => client.BaseAddres
 // Supply HttpClient instances that include access tokens when making requests to the server project
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("MovieApp.ServerAPI"));
 
+string graphQLServerPath = builder.HostEnvironment.BaseAddress + "graphql";
+builder.Services.AddMovieClient()
+	.ConfigureHttpClient(client =>
+	{
+		client.BaseAddress = new Uri(graphQLServerPath);
+	});
+
 await builder.Build().RunAsync();
