@@ -4,6 +4,7 @@
   "extensions": {
     "strawberryShake": {
       "name": "MovieClient",
+      "namespace": "MovieApp.Client.GraphQLAPIClient",
       "url": "https://localhost:7041/graphql/",
       "records": {
         "inputs": false,
