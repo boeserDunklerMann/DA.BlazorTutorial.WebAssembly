@@ -6,20 +6,111 @@ schema {
 type MovieQueryResolver {
   "gets the list of genres"
   genreList: [Genre!]!
+  "gets the list of movies."
+  movieList(order: [MovieSortInput!] where: MovieFilterInput): [Movie!]!
 }
 
 type MovieMutationResolver {
   "Add new movie data."
   addMovie(movie: MovieInput!): AddMoviePayload!
+  "Edit an existing movie-data."
+  editMovie(movie: MovieInput!): AddMoviePayload!
+  "Delete a movie"
+  deleteMovie(movieID: Int!): Int!
 }
 
-type AddMoviePayload {
-  movie: Movie!
+input MovieSortInput {
+  movieId: SortEnumType
+  title: SortEnumType
+  overview: SortEnumType
+  genre: SortEnumType
+  language: SortEnumType
+  duration: SortEnumType
+  rating: SortEnumType
+  posterPath: SortEnumType
+}
+
+input MovieFilterInput {
+  and: [MovieFilterInput!]
+  or: [MovieFilterInput!]
+  movieId: ComparableInt32OperationFilterInput
+  title: StringOperationFilterInput
+  overview: StringOperationFilterInput
+  genre: StringOperationFilterInput
+  language: StringOperationFilterInput
+  duration: ComparableInt32OperationFilterInput
+  rating: ComparableNullableOfDecimalOperationFilterInput
+  posterPath: StringOperationFilterInput
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+input ComparableInt32OperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int!]
+  nin: [Int!]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input ComparableNullableOfDecimalOperationFilterInput {
+  eq: Decimal
+  neq: Decimal
+  in: [Decimal]
+  nin: [Decimal]
+  gt: Decimal
+  ngt: Decimal
+  gte: Decimal
+  ngte: Decimal
+  lt: Decimal
+  nlt: Decimal
+  lte: Decimal
+  nlte: Decimal
+}
+
+type Movie {
+  movieId: Int!
+  title: String!
+  overview: String!
+  genre: String!
+  language: String!
+  duration: Int!
+  rating: Decimal!
+  posterPath: String
 }
 
 type Genre {
   genreId: Int!
   genreName: String!
+}
+
+type AddMoviePayload {
+  movie: Movie!
 }
 
 input MovieInput {
@@ -35,14 +126,3 @@ input MovieInput {
 
 "The built-in `Decimal` scalar type."
 scalar Decimal
-
-type Movie {
-  movieId: Int!
-  title: String!
-  overview: String!
-  genre: String!
-  language: String!
-  duration: Int!
-  rating: Decimal!
-  posterPath: String
-}

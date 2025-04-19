@@ -17,7 +17,11 @@ builder.Services.AddPooledDbContextFactory<MovieDBContext>
     (opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IMovie, MovieDataAccessLayer>();
 builder.Services.AddGraphQLServer()
-    .AddQueryType<MovieQueryResolver>().AddMutationType<MovieMutationResolver>();
+    .AddQueryType<MovieQueryResolver>()
+    .AddMutationType<MovieMutationResolver>()
+	.AddFiltering()
+    .AddSorting()
+    ;
 
 var app = builder.Build();
 

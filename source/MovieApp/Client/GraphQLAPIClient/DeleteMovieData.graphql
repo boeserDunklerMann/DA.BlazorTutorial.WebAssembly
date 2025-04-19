@@ -1,0 +1,4 @@
+﻿mutation DeleteMovieData($movieID:Int!)
+{
+	deleteMovie(movieID:$movieID)
+}

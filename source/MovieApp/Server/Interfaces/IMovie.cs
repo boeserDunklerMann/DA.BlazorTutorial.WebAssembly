@@ -9,5 +9,8 @@ namespace MovieApp.Server.Interfaces
 	{
 		Task<List<Genre>> GetGenre();
 		Task AddMovie(Movie movie);
+		Task<List<Movie>> GetAllMovies();
+		Task UpdateMovie(Movie movie);
+		Task<string> DeleteMovie(int movieID);
 	}
 }
