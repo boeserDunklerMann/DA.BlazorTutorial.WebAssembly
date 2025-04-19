@@ -50,18 +50,21 @@ namespace MovieApp.Client.Pages
 				Title = movie.Title,
 				Overview = movie.Overview,
 				Duration = movie.Duration,
-				Rating = movie.Rating.Value, // TODO DA: ??
+				Rating = movie.Rating ?? 0,
 				Genre = movie.Genre,
 				Language = movie.Language,
 				PosterPath = movie.PosterPath
 			};
-			await MovieClient.AddMovieData.ExecuteAsync(movieData);
+			if (movieData.MovieId != 0)
+				await MovieClient.EditMovieData.ExecuteAsync(movieData);
+			else
+				await MovieClient.AddMovieData.ExecuteAsync(movieData);
 			NavigateToAdminPanel();
 		}
 
 		protected void NavigateToAdminPanel()
 		{
-			NavigationManager?.NavigateTo("/");
+			NavigationManager?.NavigateTo("/admin/movies");
 		}
 		protected async Task ViewImage(InputFileChangeEventArgs e)
 		{
@@ -90,6 +93,34 @@ namespace MovieApp.Client.Pages
 				movie.PosterPath = Convert.ToBase64String(memoryStream.ToArray());
 
 				status = DefaultStatus;
+			}
+		}
+		protected override async Task OnParametersSetAsync()
+		{
+			if (MovieID != 0)
+			{
+				Title = "Edit";
+
+				MovieFilterInput movieFilterInput = new()
+				{
+					MovieId = new()
+					{
+						Eq = MovieID
+					}
+				};
+				var response = await MovieClient.FilterMovieByID.ExecuteAsync(movieFilterInput);
+				var moviedata = response?.Data?.MovieList[0];
+				if (moviedata is not null)
+				{
+					movie.MovieId = moviedata.MovieId;
+					movie.Title = moviedata.Title;
+					movie.Genre = moviedata.Genre;
+					movie.Duration = moviedata.Duration;
+					movie.PosterPath = moviedata.PosterPath;
+					movie.Rating = moviedata.Rating;
+					movie.Language = moviedata.Language;
+					imagePreview = $"/Poster/{movie.PosterPath}";
+				}
 			}
 		}
 	}
