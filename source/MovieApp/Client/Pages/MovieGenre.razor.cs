@@ -10,9 +10,9 @@ namespace MovieApp.Client.Pages
 	public class MovieGenreBase : ComponentBase
 	{
 		[Inject]
-		NavigationManager NavigationManager { get; set; } = default!;
+		private NavigationManager NavigationManager { get; set; } = default!;
 		[Inject]
-		MovieClient MovieClient { get; set; } = default!;
+		private MovieClient MovieClient { get; set; } = default!;
 		[Parameter]
 		public string SelectedGenre { get; set; } = "";
 		protected List<Genre> lstGenre = new();
