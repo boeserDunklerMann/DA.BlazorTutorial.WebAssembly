@@ -1,6 +1,7 @@
 # local appsettings. here are the connection strings - we don't want them in public git(Hub)
 appsettings.local.json
-
+#  Image storage
+Poster/
 # temporary files for uploading into DB
 [Tt]emp/
 
