@@ -4,6 +4,9 @@ using MovieApp.Server.Models;
 
 namespace MovieApp.Client.Pages
 {
+	/// <ChangeLog>
+	/// <Create Datum="19.04.2025" Entwickler="DA" />
+	/// </ChangeLog>
 	public class MovieDetailsBase : ComponentBase
 	{
 		[Inject]
