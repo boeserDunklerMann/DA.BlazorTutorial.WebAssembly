@@ -15,5 +15,11 @@ namespace MovieApp.Server.DataAccess
 		{
 			return await dbContext.Genres.AsNoTracking().ToListAsync();
 		}
+
+		public async Task AddMovieAsync(Movie movie)
+		{
+			await dbContext.Movies.AddAsync(movie);
+			await dbContext.SaveChangesAsync();
+		}
 	}
 }

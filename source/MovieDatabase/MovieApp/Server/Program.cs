@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using MovieApp.Server.DataAccess;
 using MovieApp.Server.GraphQL;
 using MovieApp.Server.Interfaces;
@@ -12,7 +13,8 @@ builder.Services.AddPooledDbContextFactory<MovieDbContext>(
     options => options.UseMySQL(builder.Configuration.GetConnectionString("default")!));
 builder.Services.AddScoped<IMovie, MovieService>();
 builder.Services.AddGraphQLServer()
-    .AddQueryType<MovieQueryResolver>();
+    .AddQueryType<MovieQueryResolver>()
+    .AddMutationType<MovieMutationResolver>();
 
 var app = builder.Build();
 
@@ -27,6 +29,18 @@ else
     app.UseHsts();
 }
 
+string FileProviderPath = app.Environment.ContentRootPath + "/Poster";
+if (!Directory.Exists(FileProviderPath))
+{
+    Directory.CreateDirectory(FileProviderPath);
+}
+app.UseFileServer(new FileServerOptions
+{
+    FileProvider = new PhysicalFileProvider(FileProviderPath),
+    RequestPath = "/poster",
+    EnableDirectoryBrowsing = true
+});
+
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
@@ -37,6 +51,5 @@ app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
-//app.UseEndpoints(ep => ep.MapGraphQL());
 app.MapGraphQL();
 app.Run();
