@@ -1,0 +1,86 @@
+schema {
+  query: MovieQueryResolver
+  mutation: MovieMutationResolver
+}
+
+type MovieQueryResolver {
+  "Gets the list of genres."
+  genreList: [Genre!]!
+}
+
+type MovieMutationResolver {
+  "Add new movie data."
+  addMovie(movie: MovieInput!): AddMoviePayload!
+}
+
+input MovieInput {
+  movieId: Int!
+  title: String!
+  overview: String!
+  genre: String!
+  language: String!
+  duration: Int!
+  rating: Decimal
+  posterPath: String
+  watchlistItems: [WatchlistItemInput!]!
+}
+
+type AddMoviePayload {
+  movie: Movie!
+}
+
+type Genre {
+  genreId: Int!
+  genreName: String!
+}
+
+type Movie {
+  movieId: Int!
+  title: String!
+  overview: String!
+  genre: String!
+  language: String!
+  duration: Int!
+  rating: Decimal
+  posterPath: String
+  watchlistItems: [WatchlistItem!]!
+}
+
+input WatchlistItemInput {
+  watchlistItemId: Int!
+  watchlistId: Int!
+  movieId: Int!
+  movie: MovieInput!
+  watchlist: WatchlistInput!
+}
+
+"The `Decimal` scalar type represents a decimal floating-point number."
+scalar Decimal
+
+input WatchlistInput {
+  watchlistId: Int!
+  userId: Int!
+  dateCreated: DateTime!
+  watchlistItems: [WatchlistItemInput!]!
+}
+
+type WatchlistItem {
+  watchlistItemId: Int!
+  watchlistId: Int!
+  movieId: Int!
+  movie: Movie!
+  watchlist: Watchlist!
+}
+
+type Watchlist {
+  watchlistId: Int!
+  userId: Int!
+  dateCreated: DateTime!
+  watchlistItems: [WatchlistItem!]!
+}
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
